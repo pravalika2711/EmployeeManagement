@@ -1,0 +1,1 @@
+This directory is retained because the ASP.NET Core development static web assets loader expects the web root to exist.
