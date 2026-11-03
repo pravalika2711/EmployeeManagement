@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "0/IHMfrv48g=",
+  "dgSpecHash": "KkikF7IggDo=",
   "success": true,
-  "projectFilePath": "D:\\razor-pages-with-api\\EmployeeManagement\\EmployeeManagement.csproj",
+  "projectFilePath": "D:\\employee-management\\EmployeeManagement\\EmployeeManagement.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\dapper\\2.1.89\\dapper.2.1.89.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",

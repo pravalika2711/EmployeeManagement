@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\razor-pages-with-api\\EmployeeManagement\\EmployeeManagement.csproj": {}
+    "D:\\employee-management\\EmployeeManagement\\EmployeeManagement.csproj": {}
   },
   "projects": {
-    "D:\\razor-pages-with-api\\EmployeeManagement\\EmployeeManagement.csproj": {
+    "D:\\employee-management\\EmployeeManagement\\EmployeeManagement.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\razor-pages-with-api\\EmployeeManagement\\EmployeeManagement.csproj",
+        "projectUniqueName": "D:\\employee-management\\EmployeeManagement\\EmployeeManagement.csproj",
         "projectName": "EmployeeManagement",
-        "projectPath": "D:\\razor-pages-with-api\\EmployeeManagement\\EmployeeManagement.csproj",
+        "projectPath": "D:\\employee-management\\EmployeeManagement\\EmployeeManagement.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "D:\\razor-pages-with-api\\EmployeeManagement\\obj\\",
+        "outputPath": "D:\\employee-management\\EmployeeManagement\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
