@@ -19,42 +19,17 @@ public class EmployeeController : ControllerBase
     }
 
     // GET: api/Employee
+    // Accepts optional query parameters: ?search=...&department=...&sort=...
+    // All filtering and sorting now happens inside the SQL query via Dapper,
+    // so the database does the work instead of loading everything into C# memory first.
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees(
         [FromQuery] string? search,
         [FromQuery] string? department,
         [FromQuery] string? sort)
     {
-        var employees = await _repository.GetAllAsync();
-        IEnumerable<Employee> query = employees;
-
-        if (!string.IsNullOrWhiteSpace(search))
-        {
-            var term = search.Trim();
-            query = query.Where(employee =>
-                employee.Name.Contains(term, StringComparison.OrdinalIgnoreCase) ||
-                employee.Email.Contains(term, StringComparison.OrdinalIgnoreCase) ||
-                employee.Department.Contains(term, StringComparison.OrdinalIgnoreCase));
-        }
-
-        if (!string.IsNullOrWhiteSpace(department))
-        {
-            query = query.Where(employee =>
-                employee.Department.Equals(department, StringComparison.OrdinalIgnoreCase));
-        }
-
-        query = sort switch
-        {
-            "name_asc" => query.OrderBy(employee => employee.Name, StringComparer.OrdinalIgnoreCase),
-            "name_desc" => query.OrderByDescending(employee => employee.Name, StringComparer.OrdinalIgnoreCase),
-            "salary_asc" => query.OrderBy(employee => employee.Salary),
-            "salary_desc" => query.OrderByDescending(employee => employee.Salary),
-            "department_asc" => query.OrderBy(employee => employee.Department, StringComparer.OrdinalIgnoreCase),
-            "department_desc" => query.OrderByDescending(employee => employee.Department, StringComparer.OrdinalIgnoreCase),
-            _ => query
-        };
-
-        return Ok(query.ToList());
+        var employees = await _repository.GetAllAsync(search, department, sort);
+        return Ok(employees);
     }
 
     // GET: api/Employee/5

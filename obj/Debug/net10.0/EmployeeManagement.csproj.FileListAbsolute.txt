@@ -211,3 +211,8 @@ C:\Users\Admin\AppData\Local\Temp\EmployeeManagement-converted-final-20261022\Em
 C:\Users\Admin\AppData\Local\Temp\EmployeeManagement-converted-final-20261022\EmployeeManagement.runtimeconfig.json
 C:\Users\Admin\AppData\Local\Temp\EmployeeManagement-converted-final-20261022\EmployeeManagement.dll
 C:\Users\Admin\AppData\Local\Temp\EmployeeManagement-converted-final-20261022\EmployeeManagement.pdb
+D:\razor-pages-with-api\EmployeeManagement\bin\Debug\net10.0\frontend\package-lock.json
+D:\razor-pages-with-api\EmployeeManagement\bin\Debug\net10.0\frontend\package.json
+D:\razor-pages-with-api\EmployeeManagement\obj\Debug\net10.0\EmployeeManagement.sourcelink.json
+D:\razor-pages-with-api\EmployeeManagement\bin\Debug\net10.0\Dapper.dll
+D:\razor-pages-with-api\EmployeeManagement\bin\Debug\net10.0\package-lock.json

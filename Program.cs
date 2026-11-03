@@ -1,5 +1,6 @@
 using EmployeeManagement.Data;
 using EmployeeManagement.Repositories;
+using EmployeeManagement.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
@@ -46,17 +47,21 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromMinutes(20);
-    options.Cookie.Name = ".EmployeeManagement.Session";
-    options.Cookie.HttpOnly = true;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-    options.Cookie.SameSite = SameSiteMode.Lax;
-    options.Cookie.IsEssential = true;
-});
+    {
+        options.IdleTimeout = TimeSpan.FromMinutes(20);
+        options.Cookie.Name = ".EmployeeManagement.Session";
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.Cookie.SameSite = SameSiteMode.Lax;
+        options.Cookie.IsEssential = true;
+    });
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+// EmployeeRepository now uses Dapper directly via IDbConnection.
+// IConfiguration (which holds the connection string from appsettings.json) is
+// automatically available in ASP.NET Core's DI container — no extra registration needed.
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
 var app = builder.Build();
 

@@ -1,0 +1,149 @@
+/* auth.css - Styling for Login and Register screens */
+
+.auth-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 10%, #eef2ff, #f8fafc 80%);
+  padding: 1.5rem;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  background-color: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--border);
+  padding: 2.5rem;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.auth-logo-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: #ffffff;
+  font-size: 1.75rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1rem;
+  box-shadow: 0 8px 16px rgba(79, 70, 229, 0.25);
+}
+
+.auth-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+
+.auth-subtitle {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-top: 0.35rem;
+}
+
+.auth-error-alert {
+  background-color: var(--danger-light);
+  color: var(--danger-text);
+  border: 1px solid #fecaca;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Success alert shown after registration */
+.auth-success-alert {
+  background-color: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.auth-submit-btn {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.auth-hint-box {
+  margin-top: 1.75rem;
+  padding: 0.9rem 1rem;
+  background-color: #f1f5f9;
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--primary);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.auth-hint-title {
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 0.25rem;
+}
+
+.auth-hint-code {
+  font-family: monospace;
+  background-color: #e2e8f0;
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  color: var(--text-main);
+}
+
+/* Password strength hint below the password fields */
+.auth-password-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  background-color: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.5rem 0.75rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+
+/* Switch between Login and Register link row */
+.auth-switch-link {
+  margin-top: 1.25rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+/* Looks like a link, rendered as a button for accessibility */
+.auth-link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--primary);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.auth-link-btn:hover {
+  color: var(--primary-dark, #4338ca);
+}
