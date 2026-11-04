@@ -24,7 +24,7 @@ export default function Register({ onGoToLogin }) {
 
     // Basic client-side check: all fields required
     if (!userName.trim()) {
-      setErrorMessage('Username is required.');
+      setErrorMessage('Employee email is required.');
       return;
     }
     if (!password) {
@@ -86,13 +86,13 @@ export default function Register({ onGoToLogin }) {
           <form onSubmit={handleSubmit} noValidate>
             <div className="form-group">
               <label className="form-label" htmlFor="reg-userName">
-                Username <span className="required">*</span>
+                Employee Email <span className="required">*</span>
               </label>
               <input
                 id="reg-userName"
-                type="text"
+                type="email"
                 className="form-input"
-                placeholder="Choose a username (letters, digits, underscore)"
+                placeholder="Enter the email from your employee record"
                 value={userName}
                 onChange={(e) => setUserName(e.target.value)}
                 disabled={isLoading}

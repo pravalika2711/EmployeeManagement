@@ -17,6 +17,7 @@ export default function Dashboard({
   onNavigateEmployees,
   onOpenAddModal,
   userName = 'Admin',
+  userRole = '',
 }) {
   const [employees, setEmployees] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -97,33 +98,39 @@ export default function Dashboard({
               icon="🏢"
               variant="blue"
             />
-            <StatCard
-              title="Average Salary"
-              value={formatCurrency(averageSalary)}
-              description="Across all current employees"
-              icon="₹"
-              variant="emerald"
-            />
+            {userRole !== 'Employee' && (
+              <StatCard
+                title="Average Salary"
+                value={formatCurrency(averageSalary)}
+                description="Across all current employees"
+                icon="₹"
+                variant="emerald"
+              />
+            )}
           </div>
 
+          {userRole !== 'Employee' && (
+          <>
           {/* Quick Actions Grid */}
           <div className="dashboard-section">
             <div className="section-header">
               <h3 className="section-title">Quick Actions</h3>
             </div>
             <div className="quick-action-cards">
-              <button
-                className="quick-action-card"
-                onClick={onNavigateEmployees}
-              >
-                <span className="quick-action-icon">📋</span>
-                <span className="quick-action-title">Browse Directory</span>
-                <span className="quick-action-desc">
-                  Search, filter, edit, or delete existing employee records.
-                </span>
-              </button>
+              {userRole !== 'Employee' && (
+                <button
+                  className="quick-action-card"
+                  onClick={onNavigateEmployees}
+                >
+                  <span className="quick-action-icon">📋</span>
+                  <span className="quick-action-title">Browse Directory</span>
+                  <span className="quick-action-desc">
+                    Search, filter, edit, or delete existing employee records.
+                  </span>
+                </button>
+              )}
 
-              <button
+              {userRole === 'Admin' && <button
                 className="quick-action-card"
                 onClick={onOpenAddModal}
               >
@@ -132,18 +139,20 @@ export default function Dashboard({
                 <span className="quick-action-desc">
                   Register a new staff member with email, department, and salary.
                 </span>
-              </button>
+              </button>}
 
-              <button
-                className="quick-action-card"
-                onClick={loadData}
-              >
-                <span className="quick-action-icon">🔄</span>
-                <span className="quick-action-title">Sync Data</span>
-                <span className="quick-action-desc">
-                  Fetch the latest records directly from the SQLite database.
-                </span>
-              </button>
+              {userRole !== 'Employee' && (
+                <button
+                  className="quick-action-card"
+                  onClick={loadData}
+                >
+                  <span className="quick-action-icon">🔄</span>
+                  <span className="quick-action-title">Sync Data</span>
+                  <span className="quick-action-desc">
+                    Fetch the latest records directly from the SQLite database.
+                  </span>
+                </button>
+              )}
             </div>
           </div>
 
@@ -151,17 +160,19 @@ export default function Dashboard({
           <div className="dashboard-section">
             <div className="section-header">
               <h3 className="section-title">Recent Employees</h3>
-              <button
-                className="btn btn-secondary btn-sm"
-                onClick={onNavigateEmployees}
-              >
-                View All Directory →
-              </button>
+              {userRole !== 'Employee' && (
+                <button
+                  className="btn btn-secondary btn-sm"
+                  onClick={onNavigateEmployees}
+                >
+                  View All Directory →
+                </button>
+              )}
             </div>
 
             {employees.length === 0 ? (
               <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-                No employees found in the database yet. Click "Add New Employee" to get started!
+                No employees found in the database yet. {userRole === 'Admin' ? 'Click "Add New Employee" to get started!' : 'Your directory is currently empty.'}
               </p>
             ) : (
               <div className="table-responsive">
@@ -194,6 +205,8 @@ export default function Dashboard({
               </div>
             )}
           </div>
+          </>
+          )}
         </>
       )}
     </div>

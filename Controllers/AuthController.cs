@@ -38,11 +38,16 @@ public class AuthController : ControllerBase
         // Trim username for consistency
         var username = request.UserName.Trim();
 
-        // 1. Reject attempts to register the reserved admin account
-        if (string.Equals(username, AdminUsername, StringComparison.OrdinalIgnoreCase))
+        // Employee accounts must use the email of an existing employee record.
+        if (username.Length > 50 || !new EmailAddressAttribute().IsValid(username))
         {
-            return Conflict(new { message = "That username is not available." });
+            return BadRequest(new { message = "Enter a valid employee email address (up to 50 characters)." });
         }
+        if (string.Equals(username, AdminUsername, StringComparison.OrdinalIgnoreCase))
+            return Conflict(new { message = "That email is not available." });
+        var normalizedEmail = username.ToLowerInvariant();
+        if (!await _db.Employees.AnyAsync(e => e.Email.ToLower() == normalizedEmail))
+            return BadRequest(new { message = "Registration is available only to employees with an existing employee record." });
 
         // 2. Confirm password fields match (server-side check)
         if (request.Password != request.ConfirmPassword)
@@ -53,7 +58,7 @@ public class AuthController : ControllerBase
         // 3. Check username uniqueness (case-insensitive — DB index is NOCASE but we also
         //    guard here to return a clear message before any insert attempt)
         bool exists = await _db.Users
-            .AnyAsync(u => u.Username == username); // EF uses COLLATE NOCASE index
+            .AnyAsync(u => u.Username == normalizedEmail); // EF uses COLLATE NOCASE index
 
         if (exists)
         {
@@ -66,7 +71,7 @@ public class AuthController : ControllerBase
         // 5. Persist the new user — no plain-text password is stored
         var user = new User
         {
-            Username = username,
+            Username = normalizedEmail,
             PasswordHash = passwordHash,
             CreatedAt = DateTime.UtcNow
         };
@@ -89,25 +94,36 @@ public class AuthController : ControllerBase
         // 1. Check built-in admin credentials first (not stored in DB)
         bool isAdmin = string.Equals(username, AdminUsername, StringComparison.OrdinalIgnoreCase)
                        && request.Password == AdminPassword;
+        string role;
+        string authenticatedName;
 
         if (!isAdmin)
         {
-            // 2. Look up the user in the database (case-insensitive lookup via NOCASE collation)
+            var normalizedEmail = username.ToLowerInvariant();
+            var employeeExists = await _db.Employees.AnyAsync(e => e.Email.ToLower() == normalizedEmail);
             var user = await _db.Users
-                .FirstOrDefaultAsync(u => u.Username == username);
+                .FirstOrDefaultAsync(u => u.Username == normalizedEmail);
 
             // 3. If not found or password does not match, reject
-            if (user is null || !_passwordHasher.VerifyPassword(user.PasswordHash, request.Password))
+            if (!employeeExists || user is null || !_passwordHasher.VerifyPassword(user.PasswordHash, request.Password))
             {
-                return Unauthorized(new { message = "Invalid user name or password." });
+                return Unauthorized(new { message = "Invalid email or password." });
             }
+            role = "Employee";
+            authenticatedName = normalizedEmail;
+        }
+        else
+        {
+            role = "Admin";
+            authenticatedName = username;
         }
 
         // 4. Issue the authentication cookie (same as before — reuses existing cookie auth)
         var claims = new[]
         {
-            new Claim(ClaimTypes.NameIdentifier, username),
-            new Claim(ClaimTypes.Name, username)
+            new Claim(ClaimTypes.NameIdentifier, authenticatedName),
+            new Claim(ClaimTypes.Name, authenticatedName),
+            new Claim(ClaimTypes.Role, role)
         };
         var identity = new ClaimsIdentity(
             claims,
@@ -118,10 +134,18 @@ public class AuthController : ControllerBase
             CookieAuthenticationDefaults.AuthenticationScheme,
             principal);
 
-        HttpContext.Session.SetString("UserName", username);
+        HttpContext.Session.SetString("UserName", authenticatedName);
 
-        return Ok(new { message = "Login successful." });
+        return Ok(new { message = "Login successful.", userName = authenticatedName, role });
     }
+
+    [Authorize]
+    [HttpGet("me")]
+    public IActionResult CurrentUser() => Ok(new
+    {
+        userName = User.Identity?.Name,
+        role = User.FindFirstValue(ClaimTypes.Role)
+    });
 
     // ─────────────────────────────────────────────────────────────────────────
     // POST /api/Auth/logout
@@ -149,12 +173,7 @@ public class AuthController : ControllerBase
 
     public sealed class RegisterRequest
     {
-        /// <summary>Username — 3 to 50 characters, letters/digits/underscore only.</summary>
         [Required(ErrorMessage = "Username is required.")]
-        [StringLength(50, MinimumLength = 3,
-            ErrorMessage = "Username must be between 3 and 50 characters.")]
-        [RegularExpression(@"^[a-zA-Z0-9_]+$",
-            ErrorMessage = "Username may only contain letters, digits, and underscores.")]
         public string UserName { get; set; } = string.Empty;
 
         /// <summary>

@@ -7,13 +7,13 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import EmployeesPage from './pages/EmployeesPage';
-import { getEmployees } from './api/employeeApi';
-import { logout } from './api/authApi';
+import { getCurrentUser, logout } from './api/authApi';
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [userName, setUserName] = useState('');
+  const [userRole, setUserRole] = useState('');
   const [activePage, setActivePage] = useState('dashboard'); // 'dashboard' or 'employees'
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [openAddModalOnEmployees, setOpenAddModalOnEmployees] = useState(false);
@@ -24,8 +24,9 @@ export default function App() {
   useEffect(() => {
     async function verifyAuth() {
       try {
-        await getEmployees();
-        // If GET /api/Employee succeeds (status 200), cookie auth is valid
+        const user = await getCurrentUser();
+        setUserName(user.userName || 'user');
+        setUserRole(user.role || 'Employee');
         setIsAuthenticated(true);
       } catch (err) {
         // If status 401 Unauthorized, show Login page
@@ -38,8 +39,9 @@ export default function App() {
     verifyAuth();
   }, []);
 
-  const handleLoginSuccess = (name) => {
-    setUserName(name || 'user');
+  const handleLoginSuccess = (user) => {
+    setUserName(user?.userName || 'user');
+    setUserRole(user?.role || 'Employee');
     setIsAuthenticated(true);
     setActivePage('dashboard');
     setAuthView('login'); // reset for next logout
@@ -52,12 +54,14 @@ export default function App() {
       console.warn('Logout API error:', err);
     } finally {
       setIsAuthenticated(false);
+      setUserRole('');
       setActivePage('dashboard');
       setAuthView('login');
     }
   };
 
   const handleOpenAddModalFromSidebar = () => {
+    if (userRole !== 'Admin') return;
     setActivePage('employees');
     setOpenAddModalOnEmployees(true);
   };
@@ -101,6 +105,7 @@ export default function App() {
         onClose={() => setIsSidebarOpen(false)}
         onOpenAddModal={handleOpenAddModalFromSidebar}
         userName={userName}
+        userRole={userRole}
       />
 
       <div className="main-layout">
@@ -117,6 +122,7 @@ export default function App() {
               onNavigateEmployees={() => setActivePage('employees')}
               onOpenAddModal={handleOpenAddModalFromSidebar}
               userName={userName}
+              userRole={userRole}
             />
           )}
 
@@ -124,6 +130,7 @@ export default function App() {
             <EmployeesPage
               isAddModalOpenInitially={openAddModalOnEmployees}
               onResetInitialAddModal={() => setOpenAddModalOnEmployees(false)}
+              userRole={userRole}
             />
           )}
         </main>

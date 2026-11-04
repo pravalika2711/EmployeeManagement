@@ -22,6 +22,10 @@ export async function login(userName, password) {
   });
 }
 
+export async function getCurrentUser() {
+  return await request('/api/Auth/me', { method: 'GET' });
+}
+
 /**
  * Register a new user account.
  *

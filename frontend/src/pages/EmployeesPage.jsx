@@ -15,6 +15,7 @@ import {
 export default function EmployeesPage({
   isAddModalOpenInitially = false,
   onResetInitialAddModal,
+  userRole = '',
 }) {
   const [employees, setEmployees] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -38,13 +39,13 @@ export default function EmployeesPage({
 
   // Handle opening modal if triggered from sidebar or dashboard
   useEffect(() => {
-    if (isAddModalOpenInitially) {
+    if (isAddModalOpenInitially && userRole === 'Admin') {
       setModalMode('create');
       setSelectedEmployee(null);
       setIsModalOpen(true);
       if (onResetInitialAddModal) onResetInitialAddModal();
     }
-  }, [isAddModalOpenInitially, onResetInitialAddModal]);
+  }, [isAddModalOpenInitially, onResetInitialAddModal, userRole]);
 
   /**
    * Fetch employees from the backend using the current filters
@@ -89,6 +90,7 @@ export default function EmployeesPage({
 
   // Handlers for Add/Edit
   const handleOpenAddModal = () => {
+    if (userRole !== 'Admin') return;
     setModalMode('create');
     setSelectedEmployee(null);
     setIsModalOpen(true);
@@ -168,10 +170,10 @@ export default function EmployeesPage({
             Manage your organization's staff, view details, search, and update records.
           </p>
         </div>
-        <button className="btn btn-primary" onClick={handleOpenAddModal}>
+        {userRole === 'Admin' && <button className="btn btn-primary" onClick={handleOpenAddModal}>
           <span>➕</span>
           <span>Add Employee</span>
-        </button>
+        </button>}
       </div>
 
       {/* Alert Notification */}
@@ -250,7 +252,7 @@ export default function EmployeesPage({
             onSortChange={setCurrentSort}
             onEdit={handleOpenEditModal}
             onDelete={handleOpenDeleteDialog}
-            onOpenAddModal={handleOpenAddModal}
+            onOpenAddModal={userRole === 'Admin' ? handleOpenAddModal : undefined}
           />
         )}
       </div>

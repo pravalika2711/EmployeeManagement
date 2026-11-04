@@ -27,9 +27,9 @@ export default function Login({ onLoginSuccess, onGoToRegister }) {
 
     setIsLoading(true);
     try {
-      await login(userName, password);
+      const user = await login(userName, password);
       // Notify parent app of successful login
-      onLoginSuccess(userName.trim());
+      onLoginSuccess(user);
     } catch (err) {
       setErrorMessage(err.message || 'Login failed. Please check your credentials.');
     } finally {
@@ -56,13 +56,13 @@ export default function Login({ onLoginSuccess, onGoToRegister }) {
         <form onSubmit={handleSubmit} noValidate>
           <div className="form-group">
             <label className="form-label" htmlFor="userName">
-              Username <span className="required">*</span>
+              Email or Admin Username <span className="required">*</span>
             </label>
             <input
               id="userName"
               type="text"
               className="form-input"
-              placeholder="Enter your username"
+              placeholder="Employee email or admin"
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
               disabled={isLoading}

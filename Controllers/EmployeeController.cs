@@ -47,6 +47,7 @@ public class EmployeeController : ControllerBase
     }
 
     // POST: api/Employee
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<ActionResult<Employee>> CreateEmployee(Employee employee)
     {

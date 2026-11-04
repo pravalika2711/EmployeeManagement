@@ -9,6 +9,7 @@ export default function Sidebar({
   onClose,
   onOpenAddModal,
   userName = 'Admin',
+  userRole = '',
 }) {
   const handleNavClick = (page) => {
     setActivePage(page);
@@ -52,6 +53,7 @@ export default function Sidebar({
             <span>Employees</span>
           </button>
 
+          {userRole === 'Admin' && <>
           <span className="nav-section-title" style={{ marginTop: '1rem' }}>
             Quick Actions
           </span>
@@ -67,6 +69,7 @@ export default function Sidebar({
             <span>➕</span>
             <span>Add Employee</span>
           </button>
+          </>}
         </nav>
 
         <div className="sidebar-footer">
@@ -76,7 +79,7 @@ export default function Sidebar({
             </div>
             <div className="user-info">
               <span className="user-name">{userName}</span>
-              <span className="user-role">Administrator</span>
+              <span className="user-role">{userRole}</span>
             </div>
           </div>
         </div>
